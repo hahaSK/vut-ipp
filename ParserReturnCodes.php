@@ -3,28 +3,23 @@
 /**
  * VUT FIT IPP 2019/2020 project.
  *
- * ReturnCode class class.
+ * ReturnCode class.
  *
  * @author Ing. Juraj lahvička, xlahvi00 <xlahvi00@vutbr.cz>
  */
 
 declare(strict_types=1);
-include("Messages.php");
+include("ParserMessages.php");
 
 /**
  * Class ReturnCodes for handling exiting and message printing.
  */
-class ReturnCodes
+class ParserReturnCodes
 {
     public static function ParameterError()
     {
-        self::printMessage(Messages::$ParserHelpMessage);
+        self::printMessage(ParserMessages::$ParserHelpMessage);
         exit(10);
-    }
-
-    public static function InputFileError()
-    {
-        exit(11);
     }
 
     /**
@@ -32,7 +27,7 @@ class ReturnCodes
      */
     public static function OutputFileError(string $filePath)
     {
-        self::printMessage(Messages::$OutputFileErrMessage . $filePath . ".");
+        self::printMessage(ParserMessages::$OutputFileErrMessage . $filePath . ".");
         exit(12);
     }
 
@@ -47,7 +42,7 @@ class ReturnCodes
 
     public static function HeaderFileError()
     {
-        self::printMessage(Messages::$HeaderFileErrMessage);
+        self::printMessage(ParserMessages::$HeaderFileErrMessage);
         exit(21);
     }
 

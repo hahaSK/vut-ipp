@@ -9,7 +9,7 @@
  */
 
 declare(strict_types=1);
-include("ReturnCodes.php");
+include("ParserReturnCodes.php");
 include("XMLGenerator.php");
 
 
@@ -128,7 +128,7 @@ final class IPPCodeParser
                     $header = true;
                     continue;
                 } else
-                    ReturnCodes::HeaderFileError();
+                    ParserReturnCodes::HeaderFileError();
             }
             //endregion
 
@@ -140,7 +140,7 @@ final class IPPCodeParser
                     if (isset($matches[2]))
                         ++$commentsCount;
                     if (!self::parsOperands($operands, $matches[1], $parsedOperands))
-                        ReturnCodes::LexicalSyntacticalError($lineNumber, $opCode, $operands);
+                        ParserReturnCodes::LexicalSyntacticalError($lineNumber, $opCode, $operands);
 
                     array_shift($parsedOperands); //remove 0th element
                     $xmlGen->AddInstruction($opCode, $parsedOperands);
@@ -155,11 +155,11 @@ final class IPPCodeParser
                 }
             }
             if ($invalidInstruction)
-                ReturnCodes::OperationCodeError($lineNumber, $line);
+                ParserReturnCodes::OperationCodeError($lineNumber, $line);
         }
 
         if (!$header)
-            ReturnCodes::HeaderFileError();
+            ParserReturnCodes::HeaderFileError();
 
         if ($stats)
             self::writeStats($arguments["stats"], $arguments, $instructionCount, $commentsCount, count($labels), $jumpsCount);
@@ -301,7 +301,7 @@ final class IPPCodeParser
             return;
 
         if (!($fileHandle = fopen($filePath, 'w')))
-            ReturnCodes::OutputFileError($filePath);
+            ParserReturnCodes::OutputFileError($filePath);
 
         foreach ($arguments as $key => $value) {
             $data = 0;
@@ -326,14 +326,14 @@ final class IPPCodeParser
             if (is_array($value)) {
                 foreach ($value as $innerVal) {
                     if (fwrite($fileHandle, "$data\n") === false)
-                        ReturnCodes::OutputFileError($filePath);
+                        ParserReturnCodes::OutputFileError($filePath);
                 }
             } else
                 if (fwrite($fileHandle, "$data\n") === false)
-                    ReturnCodes::OutputFileError($filePath);
+                    ParserReturnCodes::OutputFileError($filePath);
         }
 
         if (!fclose($fileHandle))
-            ReturnCodes::OutputFileError($filePath);
+            ParserReturnCodes::OutputFileError($filePath);
     }
 }

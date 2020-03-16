@@ -15,14 +15,14 @@ include("IPPCodeParser.php");
 $options = getopt($shortOpts, $longOpts);
 
 if (isset($options["help"]) or isset($options["h"])) {
-    fwrite(STDOUT, Messages::$ParserHelpMessage . PHP_EOL);
-    ReturnCodes::Success();
+    fwrite(STDOUT, ParserMessages::$ParserHelpMessage . PHP_EOL);
+    ParserReturnCodes::Success();
 }
 
 if (!isset($options["stats"]) && (isset($options["loc"]) || isset($options["comments"]) || isset($options["labels"]) || isset($options["jumps"])))
-    ReturnCodes::ParameterError();
+    ParserReturnCodes::ParameterError();
 
 
 fwrite(STDOUT, IPPCodeParser::Parse($options)->saveXML());
 
-ReturnCodes::Success();
+ParserReturnCodes::Success();

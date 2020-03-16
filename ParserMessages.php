@@ -3,7 +3,7 @@
 /**
  * VUT FIT IPP 2019/2020 project.
  *
- * Messages class.
+ * ParserMessages class.
  *
  * @author Ing. Juraj lahvička, xlahvi00 <xlahvi00@vutbr.cz>
  */
@@ -11,9 +11,9 @@
 declare(strict_types=1);
 
 /**
- * Class Messages contains General messages
+ * Class ParserMessages contains General messages
  */
-class Messages
+class ParserMessages
 {
     public static string $HeaderFileErrMessage = "Wrong or missing header .IPPcode20",
         $ParserHelpMessage = "Script parse.php loads IPPcode20 source code from standard input,
