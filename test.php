@@ -20,4 +20,7 @@ if (isset($options["int-only"]) and (isset($options["parse-only"]) or isset($opt
     TestReturnCodes::ParameterError();
 
 $tester = new IPPTester();
-$tester->Test($options);
+$htmlGen = new htmlGenerator();
+fwrite(STDOUT, $htmlGen->Generate($tester->Test($options)));
+
+TestReturnCodes::Success();
