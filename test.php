@@ -7,8 +7,6 @@ include("IPPTester.php");
 
 $options = getopt($ShortOpt, $LongOpt);
 
-var_dump($options);
-
 if (isset($options["help"]) or isset($options["h"])){
     fwrite(STDOUT, TestMessages::$HelpMessage . PHP_EOL);
     TestReturnCodes::Success();

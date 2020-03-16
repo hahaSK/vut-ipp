@@ -9,13 +9,12 @@ class htmlGenerator
                                 <head><title>IPP20 test results</title></head>';
 
     private string $_passed = '<h2>Passed</h2>
-                                <div class="passed>';
+                                <div class="passed">';
     private string $_notPassed = '<h2>Not Passed</h2>
-                                  <div class="notPassed>';
+                                  <div class="notPassed">';
 
     public function Generate($tests)
     {
-        var_dump($tests);
         $passedCount = $notPassedCount = 0;
         foreach ($tests as $test => $value) {
             if ($value) {
@@ -28,7 +27,7 @@ class htmlGenerator
         }
         $this->_passed .= '</div>';
         $this->_notPassed .= '</div>';
-
+        
         return $this->_header . $this->summaryTable($passedCount, $notPassedCount, count($tests)) . $this->_passed . $this->_notPassed;
     }
 
@@ -37,9 +36,12 @@ class htmlGenerator
         $testDiv .= "<a href=\"$test\">$test</a><br>" . PHP_EOL;
     }
 
-    private function table(int $passedCount, int $notPassedCount, int $count)
+    private function summaryTable(int $passedCount, int $notPassedCount, int $count)
     {
-        $passedPercentage = $passedCount / $count;
+        $passedPercentage = ($passedCount / $count) * 100;
+
+        if (is_nan($passedPercentage))
+            $passedPercentage = 100;
 
         return "<h1>$passedPercentage% Passed</h1>
                 <table>

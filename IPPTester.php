@@ -20,14 +20,16 @@ final class IPPTester
         $inFile = str_replace('.' . self::srcExt, ".in", $current->getPathname());
         $outFile = str_replace('.' . self::srcExt, ".out", $current->getPathname());
         $rcFile = str_replace('.' . self::srcExt, ".rc", $current->getPathname());
-        $outTemp = $outFile . "_tmp";
+        $outFileTemp = $outFile . "_tmp";
+        $rcFileTemp = $rcFile . "_tmp";
         $srcFile = $current->getPathname();
 
         $testFiles =  [$srcFile => '',
             $inFile  => '',
             $outFile => '',
             $rcFile => '0',
-            $outTemp => ''];
+            $outFileTemp => '',
+            $rcFileTemp => ''];
 
         foreach ($testFiles as $testFile => $testFileDefVal)
         {
@@ -38,13 +40,13 @@ final class IPPTester
         $result = 0;
         if ($this->parseOnly)
         {
-            $cmd = "\"php\" \"$this->parseScript\" < \"$srcFile\" > \"$outTemp\"";
+            $cmd = "\"php7.4\" \"$this->parseScript\" < \"$srcFile\" > \"$outFileTemp\"";
             exec($cmd, $output, $result);
-            echo $rcFile;
+            file_put_contents($rcFileTemp, $result);
             if ($result != 0)
-                exec("diff $result \"$rcFile\"", $output, $result);
+                exec("diff $rcFileTemp \"$rcFile\"", $output, $result);
             else
-                exec("$this->jexamxmlPath $outFile $outTemp", $output, $result);
+                exec("java -jar $this->jexamxmlPath $outFile $outFileTemp", $output, $result);
         }
         else if ($this->intOnly)
         {
@@ -62,8 +64,8 @@ final class IPPTester
         }
 
         $this->tests += [str_replace('\\', '/', $srcFile) => ($result == 0) ? true : false];
-        if (!unlink($outTemp))
-            TestReturnCodes::InternalError("Cannot delete temporary file $outTemp");
+        $this->removeTmpFile($outFileTemp);
+        $this->removeTmpFile($rcFileTemp);
     }
 
     public function Test(array $arguments) : array
@@ -129,6 +131,15 @@ final class IPPTester
 
         if (isset($arguments["jexamxml"]))
             $this->jexamxmlPath = $arguments["jexamxml"];
+    }
+
+    /**
+     * @param string $tmpFile
+     */
+    private function removeTmpFile(string $tmpFile): void
+    {
+        if (!unlink($tmpFile))
+            TestReturnCodes::InternalError("Cannot delete temporary file $tmpFile");
     }
 
 }
