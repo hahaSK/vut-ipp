@@ -9,9 +9,9 @@ class htmlGenerator
                                 <head><title>IPP20 test results</title></head>';
 
     private string $_passed = '<h2>Passed</h2>
-                                <div class="passed">';
+                                <div id="passed">';
     private string $_notPassed = '<h2>Not Passed</h2>
-                                  <div class="notPassed">';
+                                  <div id="notPassed">';
 
     public function Generate($tests)
     {
@@ -27,7 +27,7 @@ class htmlGenerator
         }
         $this->_passed .= '</div>';
         $this->_notPassed .= '</div>';
-        
+
         return $this->_header . $this->summaryTable($passedCount, $notPassedCount, count($tests)) . $this->_passed . $this->_notPassed;
     }
 
@@ -46,8 +46,8 @@ class htmlGenerator
         return "<h1>$passedPercentage% Passed</h1>
                 <table>
                     <tr>
-                        <th>Passed</th>
-                        <th>Not passed</th>
+                        <th><a href=\"#passed\">Passed</a></th>
+                        <th><a href=\"#notPassed\">Not passed</a></th>
                         <th>Tests total</th>
                     </tr>
                     <tr>
