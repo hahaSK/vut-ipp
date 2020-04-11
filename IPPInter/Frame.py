@@ -1,8 +1,8 @@
 import copy
 from abc import abstractmethod
 
-from Instructions.Instruction import Argument
-from InterepretCustomExceptions import *
+from IPPInter.Argument import Argument
+from IPPInter.InterepretCustomExceptions import *
 
 
 class FrameBase:
@@ -64,7 +64,7 @@ class Frame(FrameBase):
 
     def __check_var_init__(self, item):
         i_type, val = self._dict[item]
-        if val is None:
+        if val is None and i_type == Argument.Non_term_var:
             raise MissingValue(item)
 
 
@@ -82,12 +82,13 @@ class LocalFrame:
 
     def add(self, item: Argument):
         self.__check_stack_init__()
+        self.__check_stack_empty__()
         self._stack[len(self._stack) - 1].add(item)
 
-    def get(self, item: Argument):
+    def get(self, item: Argument, check_init=True):
         self.__check_stack_init__()
         self.__check_stack_empty__()
-        return self._stack[len(self._stack) - 1].get(item)
+        return self._stack[len(self._stack) - 1].get(item, check_init)
 
     def push(self, frame: "Frame"):
         self.__check_stack_init__()
@@ -98,6 +99,11 @@ class LocalFrame:
         self.__check_stack_init__()
         self.__check_stack_empty__()
         return self._stack.pop()
+
+    def assign(self, to: Argument, other_type, other_value):
+        self.__check_stack_init__()
+        self.__check_stack_empty__()
+        self._stack[len(self._stack) - 1].assign(to, other_type, other_value)
 
     def __check_stack_empty__(self):
         if len(self._stack) == 0:

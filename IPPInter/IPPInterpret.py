@@ -1,11 +1,11 @@
 import sys
 
-from Instructions.ProgramFlow import Label
-from InterpretReturnCodes import ErrorPrints
+from IPPInter.Instructions.ProgramFlow import Label
+from IPPInter.InterpretReturnCodes import ErrorPrints
 
-from XMLParser import XMLParser
-from Frame import Frame, LabelFrame, Stack, LocalFrame
-from InterepretCustomExceptions import IPPBaseException
+from IPPInter.XMLParser import XMLParser
+from IPPInter.Frame import Frame, LabelFrame, Stack, LocalFrame
+from IPPInter.InterepretCustomExceptions import IPPBaseException
 
 
 class Singleton(type):
@@ -19,7 +19,10 @@ class Singleton(type):
 
 def redirect_stdin(file):
     if file != "stdin":
-        sys.stdin = open(file, "r")
+        try:
+            sys.stdin = open(file, "r")
+        except:
+            ErrorPrints.file_error("Cannot open file for input")
 
 
 class IPPInterpret(metaclass=Singleton):
@@ -45,8 +48,8 @@ class IPPInterpret(metaclass=Singleton):
         super().__init__()
 
     def interpret(self, files):
-        redirect_stdin(files["input"])
         xml_instr = XMLParser().parse(files["source"])
+        redirect_stdin(files["input"])
         inst = ''
         try:
             for inst in xml_instr:

@@ -1,6 +1,6 @@
 import sys
 
-from Instructions.Instruction import BaseInstruction, Argument
+from IPPInter.Instructions.Instruction import BaseInstruction, Argument
 
 
 class DPrint(BaseInstruction):
@@ -38,7 +38,7 @@ class Break(BaseInstruction):
             print(stack, file=sys.stderr, end=' ')
             print(val, file=sys.stderr, end='\n')
 
-        from IPPIntrepret import IPPInterpret
-        print("Instrucion count: " + str(IPPInterpret().inst_count), file=sys.stderr)
+        from IPPInter.IPPInterpret import IPPInterpret
+        print("Instruction count: " + str(IPPInterpret().inst_count), file=sys.stderr)
 
         return super().do(stacks)

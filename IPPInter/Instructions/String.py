@@ -1,5 +1,5 @@
-from Instructions.Instruction import TSymSymBase, Argument
-from InterepretCustomExceptions import WrongOperandsType, StringOperationError
+from IPPInter.Instructions.Instruction import TSymSymBase, Argument
+from IPPInter.InterepretCustomExceptions import WrongOperandsType, StringOperationError
 
 """String operation instructions"""
 
@@ -60,7 +60,7 @@ class SetChar(TSymSymBase):
         sym2_type, sym2_val = self.__get_operands__(stacks, self.arg3)
         if sym1_type != Argument.type_int or sym2_type != Argument.type_string or res_type != Argument.type_string:
             raise WrongOperandsType(f" {self.opCode} {self.order}")
-        if sym1_val not in range(0, len(res_val)) or len(sym2_type) == 0:
+        if sym1_val not in range(0, len(res_val)) or len(sym2_val) == 0:
             raise StringOperationError(f" {self.opCode} {self.order}")
 
         res_val = list(res_val)

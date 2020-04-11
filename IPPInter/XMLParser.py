@@ -1,9 +1,9 @@
 import sys
 import xml.etree.ElementTree as ET
-from InterpretReturnCodes import ErrorPrints
-from Instructions.InstructionFactory import InstructionFactory
-from InterepretCustomExceptions import ArgError, OpCodeError
-from InstructionsCollection import InstructionsCollection
+from IPPInter.InterpretReturnCodes import ErrorPrints
+from IPPInter.Instructions.InstructionFactory import InstructionFactory
+from IPPInter.InterepretCustomExceptions import ArgError, OpCodeError
+from IPPInter.InstructionsCollection import InstructionsCollection
 
 
 class XMLParser:

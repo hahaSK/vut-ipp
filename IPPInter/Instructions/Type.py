@@ -1,4 +1,4 @@
-from Instructions.Instruction import BaseInstruction, Argument
+from IPPInter.Instructions.Instruction import BaseInstruction, Argument
 
 """Type operations"""
 
@@ -20,7 +20,7 @@ class Type(BaseInstruction):
         if self.arg2.i_type == Argument.type_var:
             sym_type, sym_val = stacks[self.arg2.frame].get(self.arg2, False)
 
-        if sym_val is None and self.arg2.i_type == Argument.type_var:
+        if sym_val is None and sym_type == Argument.type_var:
             sym_type = ''
 
         stacks[self.arg1.frame].assign(self.arg1, Argument.type_string, sym_type)

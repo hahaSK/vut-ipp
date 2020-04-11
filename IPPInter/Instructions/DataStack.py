@@ -1,4 +1,4 @@
-from Instructions.Instruction import BaseInstruction, Argument
+from IPPInter.Instructions.Instruction import BaseInstruction, Argument
 
 """Data stack operations"""
 

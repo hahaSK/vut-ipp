@@ -1,8 +1,7 @@
 import sys
-from abc import ABC
 
-from Instructions.Instruction import TSymSymBase, Argument
-from InterepretCustomExceptions import WrongOperandsType, BadValueError
+from IPPInter.Instructions.Instruction import TSymSymBase, Argument
+from IPPInter.InterepretCustomExceptions import WrongOperandsType, BadValueError
 
 """Program flow instructions"""
 

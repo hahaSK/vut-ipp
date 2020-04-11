@@ -1,4 +1,4 @@
-from Instructions.Instruction import BaseInstruction
+from IPPInter.Instructions.Instruction import BaseInstruction
 
 
 class InstructionsCollection(object):

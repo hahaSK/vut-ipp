@@ -43,16 +43,17 @@ class htmlGenerator
         if (is_nan($passedPercentage))
             $passedPercentage = 100;
 
+        $passedPercentage = round($passedPercentage, 2);
         return "<h1>$passedPercentage% Passed</h1>
                 <table>
                     <tr>
-                        <th><a href=\"#passed\">Passed</a></th>
-                        <th><a href=\"#notPassed\">Not passed</a></th>
+                        <th style='color: green'><a href=\"#passed\">Passed</a></th>
+                        <th style='color: red'><a href=\"#notPassed\">Not passed</a></th>
                         <th>Tests total</th>
                     </tr>
                     <tr>
-                        <th>$passedCount</th>
-                        <th>$notPassedCount</th>
+                        <th style='color: green'>$passedCount</th>
+                        <th style='color: red'>$notPassedCount</th>
                         <th>$count</th>
                     </tr>
                 </table>";

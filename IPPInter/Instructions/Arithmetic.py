@@ -1,5 +1,5 @@
-from Instructions.Instruction import TSymSymBase, Argument
-from InterepretCustomExceptions import WrongOperandsType, StringOperationError, BadValueError
+from IPPInter.Instructions.Instruction import TSymSymBase, Argument
+from IPPInter.InterepretCustomExceptions import WrongOperandsType, StringOperationError, BadValueError
 
 """Arithmetic operations"""
 
@@ -73,11 +73,11 @@ class LT(TSymSymBase):
     def do(self, stacks):
         sym1_type, sym1_val = self.__get_operands__(stacks, self.arg2)
         sym2_type, sym2_val = self.__get_operands__(stacks, self.arg3)
-        if sym1_type != Argument.type_int or sym2_type != Argument.type_int:
+        if sym1_type != sym2_type or sym1_type == Argument.type_nil or sym2_type == Argument.type_nil:
             raise WrongOperandsType(f" {self.opCode} {self.order}")
 
         res_value = sym1_val < sym2_val
-        stacks[self.arg1.frame].assign(self.arg1, Argument.type_int, res_value)
+        stacks[self.arg1.frame].assign(self.arg1, Argument.type_bool, res_value)
 
         return super().do(stacks)
 
@@ -88,7 +88,7 @@ class GT(TSymSymBase):
     def do(self, stacks):
         sym1_type, sym1_val = self.__get_operands__(stacks, self.arg2)
         sym2_type, sym2_val = self.__get_operands__(stacks, self.arg3)
-        if sym1_type != sym2_type:
+        if sym1_type != sym2_type or sym1_type == Argument.type_nil or sym2_type == Argument.type_nil:
             raise WrongOperandsType(f" {self.opCode} {self.order}")
 
         res_value = sym1_val > sym2_val
@@ -103,7 +103,9 @@ class EQ(TSymSymBase):
     def do(self, stacks):
         sym1_type, sym1_val = self.__get_operands__(stacks, self.arg2)
         sym2_type, sym2_val = self.__get_operands__(stacks, self.arg3)
-        if sym1_type != sym2_type:
+        if sym1_type == Argument.type_nil or sym2_type == Argument.type_nil:
+            pass
+        elif sym1_type != sym2_type:
             raise WrongOperandsType(f" {self.opCode} {self.order}")
 
         res_value = sym1_val == sym2_val
@@ -168,7 +170,7 @@ class Int2Char(TSymSymBase):
     def do(self, stacks):
         sym1_type, sym1_val = self.__get_operands__(stacks, self.arg2)
         if sym1_type != Argument.type_int:
-            WrongOperandsType(f" {self.opCode} {self.order}")
+            raise WrongOperandsType(f" {self.opCode} {self.order}")
 
         try:
             res_value = chr(sym1_val)

@@ -1,8 +1,8 @@
 import getopt
 import sys
 
-from IPPIntrepret import IPPInterpret
-from InterpretReturnCodes import ErrorPrints, errprint
+from IPPInter.IPPInterpret import IPPInterpret
+from IPPInter.InterpretReturnCodes import ErrorPrints, errprint
 
 
 def print_help():

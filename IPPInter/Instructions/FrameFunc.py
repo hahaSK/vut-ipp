@@ -1,4 +1,4 @@
-from Instructions.Instruction import BaseInstruction, Argument
+from IPPInter.Instructions.Instruction import BaseInstruction, Argument
 
 """ Frame instructions """
 
@@ -17,7 +17,7 @@ class Move(BaseInstruction):
 
     def do(self, stacks):
         sym = self.arg2.i_type, self.arg2.value
-        if self.arg2 == Argument.type_var:
+        if self.arg2.i_type == Argument.type_var:
             sym = stacks[self.arg2.frame].get(self.arg2)
 
         stacks[self.arg1.frame].assign(self.arg1, *sym)

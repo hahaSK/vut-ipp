@@ -1,13 +1,13 @@
-from InterepretCustomExceptions import OpCodeError
+from IPPInter.InterepretCustomExceptions import OpCodeError
 
-from Instructions.Arithmetic import Add, Sub, Mul, IDiv, LT, GT, EQ, And, Or, Not, Int2Char, Stri2Int
-from Instructions.DataStack import Pushs, Pops
-from Instructions.Debug import DPrint, Break
-from Instructions.FrameFunc import Move, CreateFrame, PushFrame, PopFrame, DefVar, Call, Return
-from Instructions.IO import Read, Write
-from Instructions.ProgramFlow import Label, Jump, JumpIfEq, JumpIfNEq, Exit
-from Instructions.String import Concat, StrLen, GetChar, SetChar
-from Instructions.Type import Type
+from IPPInter.Instructions.Arithmetic import Add, Sub, Mul, IDiv, LT, GT, EQ, And, Or, Not, Int2Char, Stri2Int
+from IPPInter.Instructions.DataStack import Pushs, Pops
+from IPPInter.Instructions.Debug import DPrint, Break
+from IPPInter.Instructions.FrameFunc import Move, CreateFrame, PushFrame, PopFrame, DefVar, Call, Return
+from IPPInter.Instructions.IO import Read, Write
+from IPPInter.Instructions.ProgramFlow import Label, Jump, JumpIfEq, JumpIfNEq, Exit
+from IPPInter.Instructions.String import Concat, StrLen, GetChar, SetChar
+from IPPInter.Instructions.Type import Type
 
 
 class InstructionFactory:

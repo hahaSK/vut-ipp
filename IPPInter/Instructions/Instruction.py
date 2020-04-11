@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from InterepretCustomExceptions import *
-from Argument import Argument
+from IPPInter.InterepretCustomExceptions import *
+from IPPInter.Argument import Argument
 
 
 class BaseInstruction(ABC):

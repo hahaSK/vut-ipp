@@ -21,46 +21,59 @@ final class IPPTester
         $outFile = str_replace('.' . self::srcExt, ".out", $current->getPathname());
         $rcFile = str_replace('.' . self::srcExt, ".rc", $current->getPathname());
         $outFileTemp = $outFile . "_tmp";
+        $outXMLFileTemp = $outFile . ".xml" . "_tmp";
         $rcFileTemp = $rcFile . "_tmp";
         $srcFile = $current->getPathname();
 
-        $testFiles =  [$srcFile => '',
-            $inFile  => '',
+        $testFiles = [$srcFile => '',
+            $inFile => '',
             $outFile => '',
             $rcFile => '0',
             $outFileTemp => '',
             $rcFileTemp => ''];
 
-        foreach ($testFiles as $testFile => $testFileDefVal)
-        {
+        $intFiles = [
+            'src' => $srcFile,
+            'in' => $inFile,
+            'outTmp' => $outFileTemp,
+            'rcTmp' => $rcFileTemp,
+            'rc' => $rcFile,
+            'out' => $outFile
+        ];
+
+        foreach ($testFiles as $testFile => $testFileDefVal) {
             if (!file_exists($testFile))
                 file_put_contents($testFile, $testFileDefVal);
         }
 
         $result = 0;
-        if ($this->parseOnly)
-        {
+        if ($this->parseOnly) {
             $cmd = "\"php7.4\" \"$this->parseScript\" < \"$srcFile\" > \"$outFileTemp\"";
             exec($cmd, $output, $result);
             file_put_contents($rcFileTemp, $result);
             if ($result != 0)
                 exec("diff $rcFileTemp \"$rcFile\"", $output, $result);
+            else {
+                exec("diff $rcFileTemp \"$rcFile\"", $output, $resultRC);
+                exec("java -jar $this->jexamxmlPath $outFile $outFileTemp", $output, $resultOUT);
+                $result = ($resultRC == 0 && $resultOUT == 0) ? 0 : 1;
+            }
+        } else if ($this->intOnly) {
+            $result = $this->testInterpret($intFiles);
+        } else {
+            $cmd = "\"php7.4\" \"$this->parseScript\" < \"$srcFile\" > \"$outXMLFileTemp\"";
+            exec($cmd, $output, $result);
+            if ($result != 0)
+            {
+                file_put_contents($rcFileTemp, $result);
+                exec("diff $rcFileTemp \"$rcFile\"", $output, $result);
+            }
             else
-                exec("java -jar $this->jexamxmlPath $outFile $outFileTemp", $output, $result);
-        }
-        else if ($this->intOnly)
-        {
-            throw new Exception("Not implemented");
-//            $cmd = "\"php.exe\" \"$this->interpretScript\" < \"$srcFile\" > \"$outTemp\"";
-//            exec($cmd, $output, $result);
-//            if ($result != 0)
-//                exec("diff $result \"$rcFile\"", $output, $result);
-//            else
-//                exec("diff $outFile $outTemp", $output, $result);
-        }
-        else
-        {
-            throw new Exception("Not implemented");
+            {
+                $intFiles['src'] = $outXMLFileTemp;
+                $result = $this->testInterpret($intFiles);
+            }
+            $this->removeTmpFile($outXMLFileTemp);
         }
 
         $this->tests += [str_replace('\\', '/', $srcFile) => ($result == 0) ? true : false];
@@ -68,7 +81,7 @@ final class IPPTester
         $this->removeTmpFile($rcFileTemp);
     }
 
-    public function Test(array $arguments) : array
+    public function Test(array $arguments): array
     {
         $this->GetArgs($arguments);
 
@@ -78,8 +91,7 @@ final class IPPTester
                 $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->directory));
             else
                 $it = new RecursiveDirectoryIterator($this->directory);
-        }
-        catch (UnexpectedValueException $exception) {
+        } catch (UnexpectedValueException $exception) {
             TestReturnCodes::InputFileError($this->directory, TestMessages::$DirectoryNotFound);
         }
 
@@ -87,13 +99,10 @@ final class IPPTester
             TestReturnCodes::InternalError("File Iterator is null!");
 
         $it->rewind();
-        while ($it->Valid())
-        {
-            if (!$it->isDot())
-            {
+        while ($it->Valid()) {
+            if (!$it->isDot()) {
                 //Non recursive is also taking directories => need to exclude them
-                if (!$this->recursive and is_dir($it->getPathname()))
-                {
+                if (!$this->recursive and is_dir($it->getPathname())) {
                     $it->next();
                     continue;
                 }
@@ -140,6 +149,28 @@ final class IPPTester
     {
         if (!unlink($tmpFile))
             TestReturnCodes::InternalError("Cannot delete temporary file $tmpFile");
+    }
+
+    private function testInterpret(array $files): int
+    {
+        $srcFile = $files['src'];
+        $inFile = $files['in'];
+        $outFileTemp = $files['outTmp'];
+        $rcFileTemp = $files['rcTmp'];
+        $rcFile = $files['rc'];
+        $outFile = $files['out'];
+
+        $cmd = "\"python3.8\" \"$this->interpretScript\" \"--source=$srcFile\" \"--input=$inFile\" > \"$outFileTemp\"";
+        exec($cmd, $output, $result);
+        file_put_contents($rcFileTemp, $result);
+        if ($result != 0)
+            exec("diff -Z --strip-trailing-cr $rcFileTemp \"$rcFile\"", $output, $result);
+        else {
+            exec("diff -Z --strip-trailing-cr $rcFileTemp \"$rcFile\"", $output, $resultRC);
+            exec("diff -Z --strip-trailing-cr $outFileTemp \"$outFile\"", $output, $resultOUT);
+            return ($resultRC == 0 && $resultOUT == 0) ? 0 : 1;
+        }
+        return $result;
     }
 
 }

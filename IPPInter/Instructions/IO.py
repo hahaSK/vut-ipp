@@ -1,5 +1,5 @@
-from Instructions.Instruction import BaseInstruction, Argument, ArgError
-from InterepretCustomExceptions import InternalError
+from IPPInter.Instructions.Instruction import BaseInstruction, Argument
+from IPPInter.InterepretCustomExceptions import IPPBaseException
 
 """Input/Output instructions"""
 
@@ -20,17 +20,26 @@ class Read(BaseInstruction):
         try:
             val = input()
         except:
-            val = ''
+            val = None
 
-        try:
-            self.arg2.set(type('', (object,), {"get": (lambda key: {"type": self.arg2.value}[key]), "text": val}),
-                          self.arg2.value)
-        except ArgError:
+        if val is None:
             self.arg2.i_type = Argument.type_nil
             self.arg2.value = None
-        except InternalError:
-            self.arg2.i_type = Argument.type_nil
-            self.arg2.value = None
+        else:
+            try:
+                self.arg2.set(type('', (object,), {"get": (lambda key: {"type": self.arg2.value}[key]), "text": val}),
+                              self.arg2.value)
+            except IPPBaseException:
+                try:
+                    self.arg2.i_type = self.arg2.value
+                    if self.arg2.i_type == Argument.type_bool:
+                        self.arg2.value = False
+                    else:
+                        self.arg2.i_type = Argument.type_nil
+                        self.arg2.value = None
+                except AttributeError:
+                    self.arg2.i_type = Argument.type_nil
+                    self.arg2.value = None
 
         stacks[self.arg1.frame].assign(self.arg1, self.arg2.i_type, self.arg2.value)
 

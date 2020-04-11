@@ -1,6 +1,6 @@
 import re
-from InterpretPatterns import Patterns
-from InterepretCustomExceptions import *
+from IPPInter.InterpretPatterns import Patterns
+from IPPInter.InterepretCustomExceptions import *
 
 
 def __replace_esc_seq__(value: str):
@@ -9,7 +9,7 @@ def __replace_esc_seq__(value: str):
     if not matched:
         return value
     for match in matched:
-        if int(match) not in range(0, 33) and int(match) != 35 and int(match) != 92:
+        if int(match) not in range(0, 1000):
             raise ArgError("Escape sequence out of range")
         value = value.replace("\\" + match, chr(int(match)))
 
@@ -60,8 +60,11 @@ class Argument:
 
     def set(self, arg, non_term):
         arg_type = arg.get("type")
-        if not re.match(getattr(self._patterns, non_term + "_type"), arg_type):
-            raise ArgError("Argument type mismatch. Expected type" + non_term + "_type")
+        try:
+            if not re.match(getattr(self._patterns, non_term + "_type"), arg_type):
+                raise ArgError("Argument type mismatch. Expected type" + non_term + "_type")
+        except AttributeError:
+            raise ArgError(f"Type pattern for type {non_term} not implemented")
 
         re_opt = 0
         if re.match(getattr(self._patterns, "const_type"), arg_type):
@@ -70,8 +73,11 @@ class Argument:
         if arg_type == self.type_string and arg.text is None:
             arg.text = ''
 
-        if not re.match(getattr(self._patterns, non_term + "_val"), arg.text, flags=re_opt):
-            raise ArgError("Argument value mismatch. Expected regex " + getattr(self._patterns, non_term + "_val"))
+        try:
+            if not re.match(getattr(self._patterns, non_term + "_val"), arg.text, flags=re_opt):
+                raise ArgError("Argument value mismatch. Expected regex " + getattr(self._patterns, non_term + "_val"))
+        except AttributeError:
+            raise ArgError(f"Value pattern for type {non_term} not implemented")
 
         self._value = arg.text
         self._frame = None
