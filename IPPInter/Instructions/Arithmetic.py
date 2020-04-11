@@ -263,7 +263,8 @@ class Stri2Int(TSymSymBase):
         sym1_type, sym1_val = self.__get_operands__(stacks, self.arg2)
         sym2_type, sym2_val = self.__get_operands__(stacks, self.arg3)
 
-        self.__check_operand_types__(sym1_type, sym2_type, [Argument.type_string])
+        self.__check_operand_types__(sym1_type, None, [Argument.type_string])
+        self.__check_operand_types__(sym2_type, None, [Argument.type_int])
 
         if sym2_val not in range(0, len(sym1_val)):
             raise StringOperationError(f" {self.opCode} {self.order}")
