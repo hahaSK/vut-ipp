@@ -66,6 +66,12 @@ class TSymSymBase(BaseInstruction, ABC):
         if self.arg3 is not None:
             self.arg3.set(arg[2], Argument.Non_term_symbol)
 
+    def __check_operand_types__(self, arg_1_type, arg_2_type, supported_types):
+        for i_type in supported_types:
+            if arg_1_type == i_type and (arg_2_type == i_type or arg_2_type is None):
+                return
+        raise WrongOperandsType(f" {self.opCode} {self.order}")
+
     def __get_operands__(self, stacks, arg: Argument):
         sym_type = sym_val = None
         if arg is not None:

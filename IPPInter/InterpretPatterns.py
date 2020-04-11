@@ -10,6 +10,10 @@ class Patterns:
         return r'^(?:int)$'
 
     @property
+    def float_type(self):
+        return r'^(?:float)$'
+
+    @property
     def bool_type(self):
         return r'^(?:bool)$'
 
@@ -31,7 +35,8 @@ class Patterns:
 
     @property
     def const_type(self):
-        return r'(?:' + self.nil_type + '|' + self.bool_type + '|' + self.int_type + '|' + self.string_type + ')'
+        return r'(?:' + self.nil_type + '|' + self.bool_type + '|' + self.int_type + '|' + self.string_type + '|'\
+               + self.float_type + ')'
 
     @property
     def symbol_type(self):
@@ -64,12 +69,17 @@ class Patterns:
         return r'(?:-?|\+?)\d+'
 
     @property
+    def float_val(self):
+        return r'[+-]?0x(?:[0-9A-F]+\.?(?:[0-9A-F])*)p[+-]?\d+'
+
+    @property
     def string_val(self):
         return r'(?:[^\s#\\]|(?:\\\d{3}))*'
 
     @property
     def const_val(self):
-        return r'((?:' + self.nil_val + '|' + self.bool_val + '|' + self.int_val + '|' + self.string_val + '))'
+        return r'((?:' + self.nil_val + '|' + self.bool_val + '|' + self.int_val + '|' + self.string_val + '|' +\
+               self.float_val + '))'
 
     @property
     def label_val(self):

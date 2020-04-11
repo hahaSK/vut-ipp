@@ -64,6 +64,8 @@ class Write(BaseInstruction):
 
         if i_type == Argument.type_bool:
             val = str(val).lower()
+        if i_type == Argument.type_float:
+            val = float.hex(val)
         if val is None:
             val = ''
 

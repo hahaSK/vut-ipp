@@ -29,7 +29,8 @@ class Argument:
     type_string = "string"
     type_var = "var"
     type_nil = "nil"
-    _types = [type_int, type_bool, type_string, type_var, type_nil]
+    type_float = "float"
+    _types = [type_int, type_bool, type_string, type_var, type_nil, type_float]
 
     @property
     def i_type(self):
@@ -96,6 +97,11 @@ class Argument:
                 return int(value)
             except ValueError:
                 raise ArgError("Argument value mismatch. Expected int, got: " + str(value))
+        if arg_type == self.type_float:
+            try:
+                return float.fromhex(value)
+            except ValueError:
+                raise ArgError("Argument value mismatch. Expected float, got: " + str(value))
         if arg_type == self.type_bool:
             if value.lower() == "true":
                 return True

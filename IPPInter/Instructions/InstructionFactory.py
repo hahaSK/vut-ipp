@@ -1,6 +1,6 @@
 from IPPInter.InterepretCustomExceptions import OpCodeError
 
-from IPPInter.Instructions.Arithmetic import Add, Sub, Mul, IDiv, LT, GT, EQ, And, Or, Not, Int2Char, Stri2Int
+from IPPInter.Instructions.Arithmetic import Add, Sub, Mul, IDiv, LT, GT, EQ, And, Or, Not, Int2Char, Stri2Int, Div, Float2Int, Int2Float
 from IPPInter.Instructions.DataStack import Pushs, Pops
 from IPPInter.Instructions.Debug import DPrint, Break
 from IPPInter.Instructions.FrameFunc import Move, CreateFrame, PushFrame, PopFrame, DefVar, Call, Return
@@ -38,6 +38,12 @@ class InstructionFactory:
             return Int2Char(order, arg)
         elif op_code.upper() == Stri2Int.opCode:
             return Stri2Int(order, arg)
+        elif op_code.upper() == Div.opCode:
+            return Div(order, arg)
+        elif op_code.upper() == Float2Int.opCode:
+            return Float2Int(order, arg)
+        elif op_code.upper() == Int2Float.opCode:
+            return Int2Float(order, arg)
         # Data stack
         elif op_code.upper() == Pushs.opCode:
             return Pushs(order, arg)
