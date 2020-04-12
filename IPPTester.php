@@ -52,9 +52,9 @@ final class IPPTester
             exec($cmd, $output, $result);
             file_put_contents($rcFileTemp, $result);
             if ($result != 0)
-                exec("diff $rcFileTemp \"$rcFile\"", $output, $result);
+                exec("diff -Z \"$rcFileTemp\" \"$rcFile\"", $output, $result);
             else {
-                exec("diff $rcFileTemp \"$rcFile\"", $output, $resultRC);
+                exec("diff -Z \"$rcFileTemp\" \"$rcFile\"", $output, $resultRC);
                 exec("java -jar $this->jexamxmlPath $outFile $outFileTemp", $output, $resultOUT);
                 $result = ($resultRC == 0 && $resultOUT == 0) ? 0 : 1;
             }
@@ -66,7 +66,7 @@ final class IPPTester
             if ($result != 0)
             {
                 file_put_contents($rcFileTemp, $result);
-                exec("diff $rcFileTemp \"$rcFile\"", $output, $result);
+                exec("diff -Z \"$rcFileTemp\" \"$rcFile\"", $output, $result);
             }
             else
             {
@@ -164,10 +164,10 @@ final class IPPTester
         exec($cmd, $output, $result);
         file_put_contents($rcFileTemp, $result);
         if ($result != 0)
-            exec("diff -Z --strip-trailing-cr $rcFileTemp \"$rcFile\"", $output, $result);
+            exec("diff -Z --strip-trailing-cr \"$rcFileTemp\" \"$rcFile\"", $output, $result);
         else {
-            exec("diff -Z --strip-trailing-cr $rcFileTemp \"$rcFile\"", $output, $resultRC);
-            exec("diff -Z --strip-trailing-cr $outFileTemp \"$outFile\"", $output, $resultOUT);
+            exec("diff -Z --strip-trailing-cr \"$rcFileTemp\" \"$rcFile\"", $output, $resultRC);
+            exec("diff -Z --strip-trailing-cr \"$outFileTemp\" \"$outFile\"", $output, $resultOUT);
             return ($resultRC == 0 && $resultOUT == 0) ? 0 : 1;
         }
         return $result;

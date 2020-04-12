@@ -1,7 +1,9 @@
 from IPPInter.InterepretCustomExceptions import OpCodeError
 
-from IPPInter.Instructions.Arithmetic import Add, Sub, Mul, IDiv, LT, GT, EQ, And, Or, Not, Int2Char, Stri2Int, Div, Float2Int, Int2Float
-from IPPInter.Instructions.DataStack import Pushs, Pops
+from IPPInter.Instructions.Arithmetic import Add, Sub, Mul, IDiv, LT, GT, EQ, And, Or, Not, Int2Char, Stri2Int, Div, \
+    Float2Int, Int2Float
+from IPPInter.Instructions.DataStack import Pushs, Pops, ClearS, AddS, SubS, MulS, IDivS, DivS, LTS, GTS, EQS, AndS, \
+    OrS, NotS, Int2CharS, Stri2IntS, Int2FloatS, Float2IntS, JumpIfEqS, JumpIfNEqS
 from IPPInter.Instructions.Debug import DPrint, Break
 from IPPInter.Instructions.FrameFunc import Move, CreateFrame, PushFrame, PopFrame, DefVar, Call, Return
 from IPPInter.Instructions.IO import Read, Write
@@ -49,6 +51,42 @@ class InstructionFactory:
             return Pushs(order, arg)
         elif op_code.upper() == Pops.opCode:
             return Pops(order, arg)
+        elif op_code.upper() == ClearS.opCode:
+            return ClearS(order, arg)
+        elif op_code.upper() == AddS.opCode:
+            return AddS(order, arg)
+        elif op_code.upper() == SubS.opCode:
+            return SubS(order, arg)
+        elif op_code.upper() == MulS.opCode:
+            return MulS(order, arg)
+        elif op_code.upper() == IDivS.opCode:
+            return IDivS(order, arg)
+        elif op_code.upper() == DivS.opCode:
+            return DivS(order, arg)
+        elif op_code.upper() == LTS.opCode:
+            return LTS(order, arg)
+        elif op_code.upper() == GTS.opCode:
+            return GTS(order, arg)
+        elif op_code.upper() == EQS.opCode:
+            return EQS(order, arg)
+        elif op_code.upper() == AndS.opCode:
+            return AndS(order, arg)
+        elif op_code.upper() == OrS.opCode:
+            return OrS(order, arg)
+        elif op_code.upper() == NotS.opCode:
+            return NotS(order, arg)
+        elif op_code.upper() == Int2CharS.opCode:
+            return Int2CharS(order, arg)
+        elif op_code.upper() == Stri2IntS.opCode:
+            return Stri2IntS(order, arg)
+        elif op_code.upper() == Int2FloatS.opCode:
+            return Int2FloatS(order, arg)
+        elif op_code.upper() == Float2IntS.opCode:
+            return Float2IntS(order, arg)
+        elif op_code.upper() == JumpIfEqS.opCode:
+            return JumpIfEqS(order, arg)
+        elif op_code.upper() == JumpIfNEqS.opCode:
+            return JumpIfNEqS(order, arg)
         # Debug
         elif op_code.upper() == DPrint.opCode:
             return DPrint(order, arg)

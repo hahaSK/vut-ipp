@@ -51,6 +51,12 @@ class BaseInstruction(ABC):
     def do(self, stacks):
         return (False, False), self.order
 
+    def __check_operand_types__(self, arg_1_type, arg_2_type, supported_types):
+        for i_type in supported_types:
+            if arg_1_type == i_type and (arg_2_type == i_type or arg_2_type is None):
+                return
+        raise WrongOperandsType(f" {self.opCode} {self.order}")
+
 
 class TSymSymBase(BaseInstruction, ABC):
     def __init__(self, order: int, arg, non_term_first_arg=Argument.Non_term_var, argc=3):
@@ -65,12 +71,6 @@ class TSymSymBase(BaseInstruction, ABC):
             self.arg2.set(arg[1], Argument.Non_term_symbol)
         if self.arg3 is not None:
             self.arg3.set(arg[2], Argument.Non_term_symbol)
-
-    def __check_operand_types__(self, arg_1_type, arg_2_type, supported_types):
-        for i_type in supported_types:
-            if arg_1_type == i_type and (arg_2_type == i_type or arg_2_type is None):
-                return
-        raise WrongOperandsType(f" {self.opCode} {self.order}")
 
     def __get_operands__(self, stacks, arg: Argument):
         sym_type = sym_val = None

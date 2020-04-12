@@ -22,6 +22,9 @@ class Read(BaseInstruction):
         except:
             val = None
 
+        if self.arg2.i_type != Argument.Non_term_type:
+            self.arg2.value = self.arg2.i_type
+
         if val is None:
             self.arg2.i_type = Argument.type_nil
             self.arg2.value = None

@@ -49,19 +49,25 @@ class XMLParser:
             ErrorPrints.err_xml_structure("Wrong root element")
 
         lang = root.attrib.get("language")
-        name = root.attrib.get("language")
+        name = root.attrib.get("name")
         description = root.attrib.get("description")
 
         if lang is None:
             ErrorPrints.err_xml_structure("Wrong root element")
-        if len(root.attrib) == 2 and name is None and description is None:
+        if len(root.attrib) == 2 and (name is None and description is None):
             ErrorPrints.err_xml_structure("Wrong root element")
         if len(root.attrib) == 3 and (name is None or description is None):
             ErrorPrints.err_xml_structure("Wrong root element")
+        if len(root.attrib) > 3:
+            ErrorPrints.err_xml_structure("Wrong root element")
+
+        if lang != "IPPcode20":
+            ErrorPrints.err_xml_structure("Wrong language")
 
     def __check_inst__(self, items):
         uniq = list()
         for item in items:
+            self.__check_excessive_text__(item.text)
             self.__check_inst_attrib__(item)
             if item.attrib["order"] in uniq:
                 ErrorPrints.err_xml_structure("Duplicity order number " + str(item.attrib["order"]))
@@ -77,7 +83,7 @@ class XMLParser:
         if item.get("order") is None or item.get("opcode") is None:
             ErrorPrints.err_xml_structure("Missing order or opcode attribute in " + str(item))
         if len(item.attrib) > 2:
-            ErrorPrints.err_xml_structure(f"Unexpected attribute in {item['opcode']} at {item['order']}")
+            ErrorPrints.err_xml_structure(f"Unexpected attribute in {item.get('opcode')} at {item.get('order')}")
 
     def __check_inst_child__(self, arguments):
         if len(arguments) == 0:
@@ -136,3 +142,8 @@ class XMLParser:
             ErrorPrints.err_xml_structure(msg + f" At {inst.get('order')} {inst.get('opcode')}")
 
         return InstructionsCollection(__instructions)
+
+    def __check_excessive_text__(self, text):
+        if text is not None and text.rstrip() != '':
+            ErrorPrints.err_xml_structure("Excessive text.")
+
