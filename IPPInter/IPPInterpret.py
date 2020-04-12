@@ -47,9 +47,9 @@ class IPPInterpret(metaclass=Singleton):
         self.Stacks["LF"].init()
         super().__init__()
 
-    def interpret(self, files):
-        xml_instr = XMLParser().parse(files["source"])
-        redirect_stdin(files["input"])
+    def interpret(self, options):
+        xml_instr = XMLParser().parse(options["source"])
+        redirect_stdin(options["input"])
         inst = ''
         try:
             for inst in xml_instr:
@@ -60,6 +60,7 @@ class IPPInterpret(metaclass=Singleton):
 
         try:
             for inst in xml_instr:
+                IPPInterpret._inst_count += 1
                 jump, order = inst.do(self.Stacks)
 
                 jump, return_jump = jump
@@ -68,10 +69,32 @@ class IPPInterpret(metaclass=Singleton):
                     if return_jump:
                         xml_instr.skip()
 
-                IPPInterpret._inst_count += 1
         except IPPBaseException as ex:
             ErrorPrints.interpret_err(f"{ex.message} in {inst.opCode} at {inst.order}", ex.ExitCode)
 
         finally:
             sys.stdin.close()
             sys.stdin = self._old_stdin
+
+        if options.get("stats") is not None:
+            write_stats(options, self.Stacks)
+
+
+def write_stats(options, stacks):
+    try:
+        file = open(options["stats"], "w")
+
+        file_content = ''
+        for option in options["statOpt"]:
+            if option == "insts":
+                file_content += f"{IPPInterpret().inst_count}\n"
+                # file.write(str(IPPInterpret().inst_count))
+            elif option == "vars":
+                file_content += f"{stacks['GF'].MaxInitVars + stacks['LF'].MaxInitVars + stacks['TF'].MaxInitVars}\n"
+                # file.write(str(stacks["GF"].MaxInitVars + stacks["LF"].MaxInitVars + stacks["TF"].MaxInitVars))
+
+        file.write(file_content)
+        file.close()
+
+    except OSError:
+        ErrorPrints.file_error(f"Cannot open {options.get('stats')} file")

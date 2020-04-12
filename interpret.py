@@ -6,8 +6,15 @@ from IPPInter.InterpretReturnCodes import ErrorPrints, errprint
 
 
 def print_help():
-    # TODO message
-    print("help\n")
+    print("Script interpret.py does interpretation of IPPcode20 from XML file.\n"
+          "Usage: python interpret.py [--help|-h] [--source=file] [--input=file] [--stats=file] [--vars]* [--insts]*\n"
+          "--help|-h    prints help to stdout.\n"
+          "--source     path to XML file. If not set it reads from stdin.\n"
+          "--input      path to file, from which the read instruction read. If not set it reads from stdin.\n"
+          "--stats      path to file, where statistics will be written\n"
+          "--vars       statistic option - max number of initialized variables\n"
+          "--insts      statistic option - number of conducted instructions.\n"
+          "at-least either --input or --source must be set")
 
 
 def main(argv):
@@ -15,15 +22,19 @@ def main(argv):
     _sourceOpt = "source"
     _stdin = "stdin"
 
+    _statsOpt = "stats"
+    _stats_extension = [_statsOpt + '=', "insts", "vars"]
+
     optlist = list()
     try:
-        optlist, args = getopt.getopt(argv, "h", [_inputOpt + '=', _sourceOpt + '=', "help"])
+        optlist, args = getopt.getopt(argv, "h", [_inputOpt + '=', _sourceOpt + '=', "help"] + _stats_extension)
     except getopt.GetoptError as e:
         errprint(e.msg)
         print_help()
         ErrorPrints.err_parameter()
 
-    _optDic = {_inputOpt: _stdin, _sourceOpt: _stdin}
+    _optDic = {_inputOpt: _stdin, _sourceOpt: _stdin, "statOpt": list()}
+    stats_set = False
     for opt, arg in optlist:
         if opt == "--help" or opt == "-h":
             print_help()
@@ -31,8 +42,17 @@ def main(argv):
         elif opt in ("--" + _inputOpt, "--" + _sourceOpt):
             if arg != '':
                 _optDic[str(opt).replace("--", '')] = arg
+        elif opt == "--" + _statsOpt:
+            stats_set = True
+            _optDic[str(opt).replace("--", '')] = arg
+        elif opt == "--insts" or opt == "--vars":
+            _optDic["statOpt"] += [str(opt).replace("--", '')]
 
     if _optDic[_inputOpt] == _stdin and _optDic[_sourceOpt] == _stdin:
+        print_help()
+        ErrorPrints.err_parameter()
+
+    if not stats_set and len(_optDic["statOpt"]) != 0:
         print_help()
         ErrorPrints.err_parameter()
 

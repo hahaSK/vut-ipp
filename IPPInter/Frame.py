@@ -39,6 +39,7 @@ class FrameBase:
 
 
 class Frame(FrameBase):
+    MaxInitVars = 0
 
     def add(self, item: Argument):
         self.__check_stack_init__()
@@ -56,10 +57,19 @@ class Frame(FrameBase):
     def assign(self, to: Argument, other_type, other_value):
         self.__check_stack_init__()
         self.__check_existence__(to.value)
+
+        if self.MaxInitVars < len(self._dict):
+            if self._dict[to.value][0] == Argument.Non_term_var and self._dict[to.value][1] is None:
+                self.MaxInitVars += 1
+
         self._dict[to.value] = (other_type, other_value)
 
     def replace(self, other: "Frame"):
         other.__check_stack_init__()
+
+        if other.MaxInitVars > self.MaxInitVars:
+            self.MaxInitVars = other.MaxInitVars
+
         self._dict = other._dict
 
     def __check_var_init__(self, item):
@@ -69,6 +79,8 @@ class Frame(FrameBase):
 
 
 class LocalFrame:
+    MaxInitVars = 0
+
     _stack = None
 
     def __init__(self):
@@ -85,6 +97,10 @@ class LocalFrame:
         self.__check_stack_empty__()
         self._stack[len(self._stack) - 1].add(item)
 
+        max_init_vars_sum = self.__gather_vars__()
+        if max_init_vars_sum > self.MaxInitVars:
+            self.MaxInitVars = max_init_vars_sum
+
     def get(self, item: Argument, check_init=True):
         self.__check_stack_init__()
         self.__check_stack_empty__()
@@ -93,6 +109,11 @@ class LocalFrame:
     def push(self, frame: "Frame"):
         self.__check_stack_init__()
         frame.__check_stack_init__()
+
+        max_init_vars_sum = self.__gather_vars__() + frame.MaxInitVars
+        if max_init_vars_sum > self.MaxInitVars:
+            self.MaxInitVars = max_init_vars_sum
+
         self._stack.append(copy.deepcopy(frame))
 
     def pop(self) -> Frame:
@@ -115,6 +136,13 @@ class LocalFrame:
 
     def __str__(self) -> str:
         return self._stack.__str__()
+
+    def __gather_vars__(self) -> int:
+        max_init_vars_sum = 0
+        for stack in self._stack:
+            max_init_vars_sum += stack.MaxInitVars
+
+        return max_init_vars_sum
 
 
 class LabelFrame(FrameBase):

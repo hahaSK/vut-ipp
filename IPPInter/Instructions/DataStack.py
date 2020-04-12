@@ -271,7 +271,7 @@ class Int2FloatS(StackBase):
         except ValueError:
             raise StringOperationError(f" {self.opCode} {self.order}")
 
-        stacks["Data"].append(Argument.type_float, res_value)
+        stacks["Data"].append((Argument.type_float, res_value))
         return super().do(stacks)
 
 
@@ -288,7 +288,7 @@ class Float2IntS(StackBase):
         except ValueError:
             raise StringOperationError(f" {self.opCode} {self.order}")
 
-        stacks["Data"].append(Argument.type_int, res_value)
+        stacks["Data"].append((Argument.type_int, res_value))
         return super().do(stacks)
 
 
@@ -330,21 +330,6 @@ class JumpIfEqS(TSymSymBase):
 
         return (sym1_val == sym2_val, False), stacks["label"].get(self.arg1)
 
-    # opCode = "JUMPIFEQS"
-    #
-    # def __init__(self, order: int, arg):
-    #     super().__init__(order, arg, Argument.Non_term_label)
-    #
-    # def do(self, stacks):
-    #     sym1_type, sym1_val = stacks["Data"].pop()
-    #     sym2_type, sym2_val = stacks["Data"].pop()
-    #     if sym1_type == sym2_type or sym1_type == Argument.type_nil or sym2_type == Argument.type_nil:
-    #         pass
-    #     else:
-    #         raise WrongOperandsType(f" {self.opCode} {self.order}")
-    #
-    #     return (sym1_val == sym2_val, False), stacks["label"].get(self.arg1)
-
 
 class JumpIfNEqS(TSymSymBase):
     opCode = "JUMPIFNEQS"
@@ -361,15 +346,3 @@ class JumpIfNEqS(TSymSymBase):
             raise WrongOperandsType(f" {self.opCode} {self.order}")
 
         return (sym1_val != sym2_val, False), stacks["label"].get(self.arg1)
-
-    # opCode = "JUMPIFNEQS"
-    #
-    # def do(self, stacks):
-    #     sym1_type, sym1_val = stacks["Data"].pop()
-    #     sym2_type, sym2_val = stacks["Data"].pop()
-    #     if sym1_type == sym2_type or sym1_type == Argument.type_nil or sym2_type == Argument.type_nil:
-    #         pass
-    #     else:
-    #         raise WrongOperandsType(f" {self.opCode} {self.order}")
-    #
-    #     return (sym1_val != sym2_val, False), stacks["label"].get(self.arg1)
