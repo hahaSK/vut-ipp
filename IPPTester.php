@@ -63,13 +63,10 @@ final class IPPTester
         } else {
             $cmd = "\"php7.4\" \"$this->parseScript\" < \"$srcFile\" > \"$outXMLFileTemp\"";
             exec($cmd, $output, $result);
-            if ($result != 0)
-            {
+            if ($result != 0) {
                 file_put_contents($rcFileTemp, $result);
                 exec("diff -Z \"$rcFileTemp\" \"$rcFile\"", $output, $result);
-            }
-            else
-            {
+            } else {
                 $intFiles['src'] = $outXMLFileTemp;
                 $result = $this->testInterpret($intFiles);
             }
@@ -160,8 +157,18 @@ final class IPPTester
         $rcFile = $files['rc'];
         $outFile = $files['out'];
 
+        $cmd = "\"python3.8\" \"$this->interpretScript\" \"--input=$inFile\" < \"$srcFile\"  > \"$outFileTemp\"";
+        exec($cmd, $output, $resultInRed);
+
+        $cmd = "\"python3.8\" \"$this->interpretScript\" \"--source=$srcFile\" < \"$inFile\" > \"$outFileTemp\"";
+        exec($cmd, $output, $resultSourceRed);
+
         $cmd = "\"python3.8\" \"$this->interpretScript\" \"--source=$srcFile\" \"--input=$inFile\" > \"$outFileTemp\"";
         exec($cmd, $output, $result);
+
+        if ($result != $resultSourceRed or $result != $resultInRed)
+            return 1;
+
         file_put_contents($rcFileTemp, $result);
         if ($result != 0)
             exec("diff -Z --strip-trailing-cr \"$rcFileTemp\" \"$rcFile\"", $output, $result);
