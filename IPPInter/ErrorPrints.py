@@ -1,3 +1,9 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 import sys
 
 
@@ -6,6 +12,7 @@ def errprint(*args, **kwargs):
 
 
 class ErrorPrints:
+    """Error print class that handles error printing"""
 
     @staticmethod
     def err_parameter():

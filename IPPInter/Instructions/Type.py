@@ -1,3 +1,9 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 from IPPInter.Instructions.Instruction import BaseInstruction, Argument
 
 """Type operations"""
@@ -11,7 +17,7 @@ class Type(BaseInstruction):
         self.order = order
         self.__check_sort_set_arg__(arg, 2)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_var)
         self.arg2.set(arg[1], Argument.Non_term_symbol)
 

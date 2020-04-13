@@ -1,3 +1,9 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 import sys
 
 from IPPInter.Instructions.Instruction import BaseInstruction, Argument
@@ -11,7 +17,7 @@ class DPrint(BaseInstruction):
         self.order = order
         self.__check_sort_set_arg__(arg, 1)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_symbol)
 
     def do(self, stacks):
@@ -30,7 +36,7 @@ class Break(BaseInstruction):
         super().__init__()
         self.order = order
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         pass
 
     def do(self, stacks):

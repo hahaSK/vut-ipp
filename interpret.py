@@ -1,11 +1,18 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 import getopt
 import sys
 
 from IPPInter.IPPInterpret import IPPInterpret
-from IPPInter.InterpretReturnCodes import ErrorPrints, errprint
+from IPPInter.ErrorPrints import ErrorPrints, errprint
 
 
 def print_help():
+    """Prints help message."""
     print("Script interpret.py does interpretation of IPPcode20 from XML file.\n"
           "Usage: python interpret.py [--help|-h] [--source=file] [--input=file] [--stats=file] [--vars]* [--insts]*\n"
           "--help|-h    prints help to stdout.\n"
@@ -35,6 +42,7 @@ def main(argv):
 
     _optDic = {_inputOpt: _stdin, _sourceOpt: _stdin, "statOpt": list()}
     stats_set = False
+    # Create option dictionary from passed arguments
     for opt, arg in optlist:
         if opt == "--help" or opt == "-h":
             print_help()
@@ -48,14 +56,17 @@ def main(argv):
         elif opt == "--insts" or opt == "--vars":
             _optDic["statOpt"] += [str(opt).replace("--", '')]
 
+    # Check if at-least one of the parameters is set
     if _optDic[_inputOpt] == _stdin and _optDic[_sourceOpt] == _stdin:
         print_help()
         ErrorPrints.err_parameter()
 
+    # For STATI extension the --stats= parameter must be set if other STATI parameters are set
     if not stats_set and len(_optDic["statOpt"]) != 0:
         print_help()
         ErrorPrints.err_parameter()
 
+    # Run the interpret
     IPPInterpret().interpret(_optDic)
 
 

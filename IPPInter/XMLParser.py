@@ -1,12 +1,19 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 import sys
 import xml.etree.ElementTree as ET
-from IPPInter.InterpretReturnCodes import ErrorPrints
-from IPPInter.Instructions.InstructionFactory import InstructionFactory
-from IPPInter.InterepretCustomExceptions import ArgError, OpCodeError
+from IPPInter.ErrorPrints import ErrorPrints
+from IPPInter.Instructions.InstructionFactory import instruction_factory
+from IPPInter.InterpretCustomExceptions import ArgError, OpCodeError
 from IPPInter.InstructionsCollection import InstructionsCollection
 
 
 class XMLParser:
+    """Class that handles parsing the XML and returns instruction list."""
 
     def parse(self, file):
         tree = ET.ElementTree
@@ -28,6 +35,7 @@ class XMLParser:
         if inst != root.getchildren():
             ErrorPrints.err_xml_structure("Unsupported element")
 
+        # Order instructions by order ascending
         try:
             inst[:] = sorted(inst, key=lambda child: int(child.get("order")))
         except:
@@ -42,6 +50,7 @@ class XMLParser:
         return self.__create_instructions__(inst)
 
     def __check_head__(self, root):
+        """Check root element."""
         if len(root.attrib) < 1 or len(root.attrib) > 3:
             ErrorPrints.err_xml_structure("Wrong root element")
 
@@ -65,6 +74,10 @@ class XMLParser:
             ErrorPrints.err_xml_structure("Wrong language")
 
     def __check_inst__(self, items):
+        """
+            Method that checks instruction for excessive or missing attributes,
+            for duplicity order and instruction sub elements.
+        """
         uniq = list()
         for item in items:
             self.__check_excessive_text__(item.text)
@@ -80,12 +93,14 @@ class XMLParser:
             uniq.append(item.attrib["order"])
 
     def __check_inst_attrib__(self, item):
+        """Helper method for checking the instruction attributes."""
         if item.get("order") is None or item.get("opcode") is None:
             ErrorPrints.err_xml_structure("Missing order or opcode attribute in " + str(item))
         if len(item.attrib) > 2:
             ErrorPrints.err_xml_structure(f"Unexpected attribute in {item.get('opcode')} at {item.get('order')}")
 
     def __check_inst_child__(self, arguments):
+        """Check arguments of instruction."""
         if len(arguments) == 0:
             return
 
@@ -113,6 +128,7 @@ class XMLParser:
             raise ArgError("Unexpected argument element.")
 
     def __check_arg__(self, arg, argument, arg_name):
+        """Checks the argument tag."""
         if arg and argument.tag == arg_name:
             raise ArgError("Redefinition of " + arg_name)
         elif not arg and argument.tag == arg_name:
@@ -121,13 +137,14 @@ class XMLParser:
         return arg
 
     def __create_instructions__(self, instructions):
+        """Method for creating the instruction list."""
         __instructions = list()
         inst = []
         try:
             for inst in instructions:
                 children = inst.getchildren()
-                instruction = InstructionFactory.get_instruction(inst.attrib["opcode"], int(inst.attrib["order"]),
-                                                                 children)
+                instruction = instruction_factory(inst.attrib["opcode"], int(inst.attrib["order"]),
+                                                  children)
 
                 if instruction.argc() != len(children):
                     ErrorPrints.err_xml_structure(f"Argument count at {inst.attrib['order']} {inst.attrib['opcode']}")
@@ -146,4 +163,3 @@ class XMLParser:
     def __check_excessive_text__(self, text):
         if text is not None and text.rstrip() != '':
             ErrorPrints.err_xml_structure("Excessive text.")
-

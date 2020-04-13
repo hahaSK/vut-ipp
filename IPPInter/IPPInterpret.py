@@ -1,14 +1,21 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 import sys
 
 from IPPInter.Instructions.ProgramFlow import Label
-from IPPInter.InterpretReturnCodes import ErrorPrints
+from IPPInter.ErrorPrints import ErrorPrints
 
 from IPPInter.XMLParser import XMLParser
 from IPPInter.Frame import Frame, LabelFrame, Stack, LocalFrame
-from IPPInter.InterepretCustomExceptions import IPPBaseException
+from IPPInter.InterpretCustomExceptions import IPPBaseException
 
 
 class Singleton(type):
+    """Singleton metaclass."""
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
@@ -18,6 +25,7 @@ class Singleton(type):
 
 
 def redirect_stdin(file):
+    """If input is not supplied from stdin redirect the stdin to file."""
     if file != "stdin":
         try:
             sys.stdin = open(file, "r")
@@ -26,6 +34,7 @@ def redirect_stdin(file):
 
 
 class IPPInterpret(metaclass=Singleton):
+    """Interpret singleton class."""
     Stacks = {
         "GF": Frame("GF"),
         "LF": LocalFrame(),
@@ -38,6 +47,7 @@ class IPPInterpret(metaclass=Singleton):
     _inst_count = 0
     _old_stdin = sys.stdin
 
+    # Instruction count property
     @property
     def inst_count(self):
         return IPPInterpret._inst_count
@@ -50,6 +60,8 @@ class IPPInterpret(metaclass=Singleton):
     def interpret(self, options):
         xml_instr = XMLParser().parse(options["source"])
         redirect_stdin(options["input"])
+
+        # First try to find all labels for the jumps
         inst = ''
         try:
             for inst in xml_instr:
@@ -58,14 +70,19 @@ class IPPInterpret(metaclass=Singleton):
         except IPPBaseException as ex:
             ErrorPrints.interpret_err(f"{ex.message} in {inst.opCode} at {inst.order}", ex.ExitCode)
 
+        # Execute each instruction
         try:
             for inst in xml_instr:
                 IPPInterpret._inst_count += 1
                 jump, order = inst.do(self.Stacks)
 
+                # Unpack the jump tuple
                 jump, return_jump = jump
                 if jump:
+                    # Jump to instruction
                     xml_instr.jump_to_inst(order)
+                    # When the jump is from Return instruction we are jumping back to the Call instruction, so need to
+                    # skip the call instruction
                     if return_jump:
                         xml_instr.skip()
 
@@ -76,11 +93,13 @@ class IPPInterpret(metaclass=Singleton):
             sys.stdin.close()
             sys.stdin = self._old_stdin
 
+        # Write statistics for the STATI extension
         if options.get("stats") is not None:
             write_stats(options, self.Stacks)
 
 
 def write_stats(options, stacks):
+    """Writes statistics to specified file"""
     try:
         file = open(options["stats"], "w")
 
@@ -88,10 +107,8 @@ def write_stats(options, stacks):
         for option in options["statOpt"]:
             if option == "insts":
                 file_content += f"{IPPInterpret().inst_count}\n"
-                # file.write(str(IPPInterpret().inst_count))
             elif option == "vars":
                 file_content += f"{stacks['GF'].MaxInitVars + stacks['LF'].MaxInitVars + stacks['TF'].MaxInitVars}\n"
-                # file.write(str(stacks["GF"].MaxInitVars + stacks["LF"].MaxInitVars + stacks["TF"].MaxInitVars))
 
         file.write(file_content)
         file.close()

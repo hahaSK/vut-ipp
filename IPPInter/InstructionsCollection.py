@@ -1,7 +1,15 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 from IPPInter.Instructions.Instruction import BaseInstruction
 
 
 class InstructionsCollection(object):
+    """Custom Instruction collection iterable class, with possibility to jump to specific instruction order."""
+
     def __init__(self, values: [BaseInstruction]):
         self.values = values
         self.location = 0

@@ -1,9 +1,20 @@
 <?php
 
+/**
+ * VUT FIT IPP 2019/2020 project.
+ *
+ * IPPTester class.
+ *
+ * @author Ing. Juraj lahvička, xlahvi00 <xlahvi00@vutbr.cz>
+ */
+
 declare(strict_types=1);
 include("TestMessages.php");
 include("htmlGenerator.php");
 
+/**
+ * Class IPPTester for running selected tests and comparing results.
+ */
 final class IPPTester
 {
     private const srcExt = 'src';
@@ -15,6 +26,9 @@ final class IPPTester
 
     private array $tests = array();
 
+    /**
+     * @param SplFileInfo $current current file to test
+     */
     private function doTest(SplFileInfo $current)
     {
         $inFile = str_replace('.' . self::srcExt, ".in", $current->getPathname());
@@ -41,12 +55,14 @@ final class IPPTester
             'out' => $outFile
         ];
 
+        //If file doesn't exist create and put a default value.
         foreach ($testFiles as $testFile => $testFileDefVal) {
             if (!file_exists($testFile))
                 file_put_contents($testFile, $testFileDefVal);
         }
 
         $result = 0;
+        //Test parser
         if ($this->parseOnly) {
             $cmd = "\"php7.4\" \"$this->parseScript\" < \"$srcFile\" > \"$outFileTemp\"";
             exec($cmd, $output, $result);
@@ -61,6 +77,7 @@ final class IPPTester
         } else if ($this->intOnly) {
             $result = $this->testInterpret($intFiles);
         } else {
+            //Test parser
             $cmd = "\"php7.4\" \"$this->parseScript\" < \"$srcFile\" > \"$outXMLFileTemp\"";
             exec($cmd, $output, $result);
             if ($result != 0) {
@@ -70,14 +87,21 @@ final class IPPTester
                 $intFiles['src'] = $outXMLFileTemp;
                 $result = $this->testInterpret($intFiles);
             }
+            //Remove temporary XML file
             $this->removeTmpFile($outXMLFileTemp);
         }
-
+        //Put the test path to test dictionary, where key is the path and the value is result
         $this->tests += [str_replace('\\', '/', $srcFile) => ($result == 0) ? true : false];
         $this->removeTmpFile($outFileTemp);
         $this->removeTmpFile($rcFileTemp);
     }
 
+    /**
+     * @brief method to start the tests.
+     *
+     * @param array $arguments
+     * @return array dictionary of test results, where key is path to the test .src and value is result
+     */
     public function Test(array $arguments): array
     {
         $this->GetArgs($arguments);
@@ -113,6 +137,8 @@ final class IPPTester
     }
 
     /**
+     * @brief parse arguments.
+     *
      * @param array $arguments
      */
     private function GetArgs(array $arguments): void
@@ -148,6 +174,12 @@ final class IPPTester
             TestReturnCodes::InternalError("Cannot delete temporary file $tmpFile");
     }
 
+    /**
+     * @brief tests the interpret with all 3 parameter variations
+     *
+     * @param array $files for interpret test
+     * @return int result of the test
+     */
     private function testInterpret(array $files): int
     {
         $srcFile = $files['src'];

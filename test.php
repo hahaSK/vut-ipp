@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * VUT FIT IPP 2019/2020 project.
+ *
+ * automatic tests framework.
+ *
+ * @author Ing. Juraj lahvička, xlahvi00 <xlahvi00@vutbr.cz>
+ */
+
 declare(strict_types=1);
 include("TestOptions.php");
 include("TestReturnCodes.php");

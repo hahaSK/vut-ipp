@@ -1,10 +1,17 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 from abc import ABC, abstractmethod
 
-from IPPInter.InterepretCustomExceptions import *
+from IPPInter.InterpretCustomExceptions import *
 from IPPInter.Argument import Argument
 
 
 class BaseInstruction(ABC):
+    """Base instruction abstract class that represents instruction."""
     opCode = None
 
     @abstractmethod
@@ -41,10 +48,10 @@ class BaseInstruction(ABC):
         except IndexError:
             raise ArgError(self.opCode + " order=" + str(self.order) + " has invalid arg count. Expected " + str(count))
 
-        self.set_arg(arg)
+        self.__set_arg__(arg)
 
     @abstractmethod
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         pass
 
     @abstractmethod
@@ -59,13 +66,17 @@ class BaseInstruction(ABC):
 
 
 class TSymSymBase(BaseInstruction, ABC):
+    """
+        Type Symbol Symbol abstract base class. This class represents the most used instructions where the first type
+        is instruction specific (default is variable) and the other 2 arguments are symbols.
+    """
     def __init__(self, order: int, arg, non_term_first_arg=Argument.Non_term_var, argc=3):
         super().__init__()
         self.order = order
         self.first_type = non_term_first_arg
         self.__check_sort_set_arg__(arg, argc)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], self.first_type)
         if self.arg2 is not None:
             self.arg2.set(arg[1], Argument.Non_term_symbol)

@@ -1,3 +1,9 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 from IPPInter.Instructions.Instruction import BaseInstruction, Argument
 
 """ Frame instructions """
@@ -11,7 +17,7 @@ class Move(BaseInstruction):
         self.order = order
         self.__check_sort_set_arg__(arg, 2)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_var)
         self.arg2.set(arg[1], Argument.Non_term_symbol)
 
@@ -31,7 +37,7 @@ class CreateFrame(BaseInstruction):
         super().__init__()
         self.order = order
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         pass
 
     def do(self, stacks):
@@ -46,7 +52,7 @@ class PushFrame(BaseInstruction):
         super().__init__()
         self.order = order
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         pass
 
     def do(self, stacks):
@@ -62,7 +68,7 @@ class PopFrame(BaseInstruction):
         super().__init__()
         self.order = order
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         pass
 
     def do(self, stacks):
@@ -78,7 +84,7 @@ class DefVar(BaseInstruction):
         self.order = order
         self.__check_sort_set_arg__(arg, 1)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_var)
 
     def do(self, stacks):
@@ -94,7 +100,7 @@ class Call(BaseInstruction):
         self.order = order
         self.__check_sort_set_arg__(arg, 1)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_label)
 
     def do(self, stacks):
@@ -110,7 +116,7 @@ class Return(BaseInstruction):
         super().__init__()
         self.order = order
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         pass
 
     def do(self, stacks):

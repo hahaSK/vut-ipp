@@ -1,18 +1,25 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 from abc import ABC
 
 from IPPInter.Instructions.Instruction import BaseInstruction, Argument, TSymSymBase
-from IPPInter.InterepretCustomExceptions import WrongOperandsType, StringOperationError
+from IPPInter.InterpretCustomExceptions import WrongOperandsType, StringOperationError
 
 """Data stack operations"""
 
 
 class StackBase(BaseInstruction, ABC):
+    """Stack base abstract class."""
 
     def __init__(self, order: int, arg):
         super().__init__()
         self.order = order
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         pass
 
 
@@ -24,7 +31,7 @@ class Pushs(BaseInstruction):
         self.order = order
         self.__check_sort_set_arg__(arg, 1)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_symbol)
 
     def do(self, stacks):
@@ -44,7 +51,7 @@ class Pops(BaseInstruction):
         self.order = order
         self.__check_sort_set_arg__(arg, 1)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_var)
 
     def do(self, stacks):

@@ -1,7 +1,13 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 import sys
 
 from IPPInter.Instructions.Instruction import TSymSymBase, Argument
-from IPPInter.InterepretCustomExceptions import WrongOperandsType, BadValueError
+from IPPInter.InterpretCustomExceptions import WrongOperandsType, BadValueError
 
 """Program flow instructions"""
 
@@ -12,7 +18,7 @@ class Label(TSymSymBase):
     def __init__(self, order: int, arg):
         super().__init__(order, arg, Argument.Non_term_label, argc=1)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_label)
 
     def do(self, stacks):
@@ -26,7 +32,7 @@ class Jump(TSymSymBase):
     def __init__(self, order: int, arg):
         super().__init__(order, arg, Argument.Non_term_label, argc=1)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_label)
 
     def do(self, stacks):
@@ -73,7 +79,7 @@ class Exit(TSymSymBase):
     def __init__(self, order: int, arg):
         super().__init__(order, arg, Argument.Non_term_label, argc=1)
 
-    def set_arg(self, arg):
+    def __set_arg__(self, arg):
         self.arg1.set(arg[0], Argument.Non_term_symbol)
 
     def do(self, stacks):

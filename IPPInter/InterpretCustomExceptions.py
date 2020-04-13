@@ -1,3 +1,10 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
+
 class IPPBaseException(Exception):
     ExitCode = 1
 

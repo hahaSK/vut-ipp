@@ -1,4 +1,12 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
+
 class Patterns:
+    """Pattern class with regex patterns."""
     """ Types """
 
     @property

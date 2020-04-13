@@ -1,5 +1,11 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 from IPPInter.Instructions.Instruction import TSymSymBase, Argument
-from IPPInter.InterepretCustomExceptions import WrongOperandsType, StringOperationError
+from IPPInter.InterpretCustomExceptions import WrongOperandsType, StringOperationError
 
 """String operation instructions"""
 

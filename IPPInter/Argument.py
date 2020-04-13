@@ -1,6 +1,12 @@
+"""
+    VUT FIT IPP 2019/2020 project.
+    Author: Ing. Juraj Lahvička
+    2020
+"""
+
 import re
 from IPPInter.InterpretPatterns import Patterns
-from IPPInter.InterepretCustomExceptions import *
+from IPPInter.InterpretCustomExceptions import *
 
 
 def __replace_esc_seq__(value: str):
@@ -17,6 +23,7 @@ def __replace_esc_seq__(value: str):
 
 
 class Argument:
+    """Argument class that represents argument."""
     _patterns = Patterns()
 
     Non_term_var = "var"
@@ -60,13 +67,16 @@ class Argument:
         self._value = None
 
     def set(self, arg, non_term):
+        """Method sets the argument fields/attributes from XML attribute by specified non terminal."""
         arg_type = arg.get("type")
+        # Try to match the type
         try:
             if not re.match(getattr(self._patterns, non_term + "_type"), arg_type):
                 raise ArgError("Argument type mismatch. Expected type" + non_term + "_type")
         except AttributeError:
             raise ArgError(f"Type pattern for type {non_term} not implemented")
 
+        # Constants are case insensitive
         re_opt = 0
         if re.match(getattr(self._patterns, "const_type"), arg_type):
             re_opt = re.IGNORECASE
@@ -74,6 +84,7 @@ class Argument:
         if arg_type == self.type_string and arg.text is None:
             arg.text = ''
 
+        # Try to match the value
         try:
             if not re.match(getattr(self._patterns, non_term + "_val"), arg.text, flags=re_opt):
                 raise ArgError("Argument value mismatch. Expected regex " + getattr(self._patterns, non_term + "_val"))
@@ -90,6 +101,7 @@ class Argument:
         self._type = arg_type
 
     def __convert_type_to_py_type__(self, arg_type, value):
+        """Method converts string type to python type."""
         if arg_type == self.Non_term_var:
             return value
         if arg_type == self.type_int:
